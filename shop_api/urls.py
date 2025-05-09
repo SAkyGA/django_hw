@@ -19,18 +19,18 @@ from django.urls import path
 from products.views import (
     category_detail_api_view,
     product_detail_api_view,
-    rewiew_detail_api_view,
+    review_detail_api_view,
     category_list_api_view,
     product_list_api_view,
-    rewiew_list_api_view
+    review_list_api_view,
 )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/category/', category_list_api_view), 
     path('api/v1/category/<int:id>/', category_detail_api_view),
-    path('api/v1/product/', product_list_api_view),
+    path('api/v1/product/reviews/', product_list_api_view),
     path('api/v1/product/<int:id>/', product_detail_api_view),
-    path('api/v1/rewiew/', rewiew_list_api_view),
-    path('api/v1/rewiew/<int:id>/', rewiew_detail_api_view),
+    path('api/v1/reviews/', review_list_api_view),
+    path('api/v1/<int:id>/reviews/', review_detail_api_view),
 ]

@@ -1,4 +1,5 @@
 from rest_framework.decorators import api_view
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response    
 from rest_framework import status
 from products.serializers import (
@@ -6,58 +7,61 @@ from products.serializers import (
     CategoryListSerializer,
     ProductDetailSerializer, 
     ProductListSerializer, 
-    RewiewDetailSerializer, 
-    RewiewListSerializer
+    ReviewDetailSerializer, 
+    ReviewListSerializer,
 )
-from .models import Category, Product, Rewiew
+from .models import Category, Product, Review
 
 
 @api_view(['GET'])
 def category_detail_api_view(request, id):
     try:
-        film = Category.objects.get(id=id, is_active=True)
+        products = Category.objects.get(id=id, is_active=True)
     except Category.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    data = CategoryDetailSerializer(film, many=False).data
+    data = CategoryDetailSerializer(products, many=False).data
     return Response(data=data)
 
 
 @api_view(['GET'])
 def product_detail_api_view(request, id):
     try:
-        film = Product.objects.get(id=id, is_active=True)
+        products = Product.objects.get(id=id, is_active=True)
     except Product.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    data = ProductDetailSerializer(film, many=False).data
+    data = ProductDetailSerializer(products, many=False).data
     return Response(data=data)
 
 
 @api_view(['GET'])
-def rewiew_detail_api_view(request, id):
+def review_detail_api_view(request, id):
     try:
-        film = Rewiew.objects.get(id=id, is_active=True)
-    except Rewiew.DoesNotExist:
+        products = Review.objects.get(id=id, is_active=True)
+    except Review.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    data = RewiewDetailSerializer(film, many=False).data
+    data = ReviewDetailSerializer(products, many=False).data
     return Response(data=data)
 
 @api_view(['GET'])
 def category_list_api_view(request):
-    films = Category.objects.filter(is_active=True)
-    data = CategoryListSerializer(films, many=True).data
+    products = Category.objects.filter(is_active=True)
+    products_count = products.count()
+    data = CategoryListSerializer(products, many=True).data
     return Response(data=data)
 
 @api_view(['GET'])
 def product_list_api_view(request):
-    films = Product.objects.filter(is_active=True)
-    data = ProductListSerializer(films, many=True).data
+    products = Product.objects.filter(is_active=True)
+    data = ProductListSerializer(products, many=True).data
     return Response(data=data)
 
 @api_view(['GET'])
-def rewiew_list_api_view(request):
-    films = Rewiew.objects.filter(is_active=True)
-    data = RewiewListSerializer(films, many=True).data
+def review_list_api_view(request):
+    products = Review.objects.filter(is_active=True)
+    data = ReviewListSerializer(products, many=True).data
     return Response(data=data)
+
+
 
 
 

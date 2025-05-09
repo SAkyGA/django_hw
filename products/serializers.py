@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Product, Rewiew
+from .models import Category, Product, Review
 
 
 
@@ -12,7 +12,7 @@ class CategoryDetailSerializer(serializers.ModelSerializer):
 class CategoryListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = 'id name'.split()
+        fields = 'id name count'.split()
 
 class ProductDetailSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,18 +20,19 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ProductListSerializer(serializers.ModelSerializer):
+    rating = serializers.FloatField(read_only=True)
     class Meta:
         model = Product
-        fields = 'id title description price category'.split()
+        fields = 'id title description price category rating'.split()
 
 
 
-class RewiewDetailSerializer(serializers.ModelSerializer):
+class ReviewDetailSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Rewiew
+        model = Review
         fields = '__all__'
 
-class RewiewListSerializer(serializers.ModelSerializer):
+class ReviewListSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Rewiew
-        fields = 'id product text'.split()
+        model = Review
+        fields = 'id product text stars '.split()
