@@ -10,6 +10,9 @@ from products.serializers import (
     ProductListSerializer, 
     ReviewDetailSerializer, 
     ReviewListSerializer,
+    CategoryValidateSerializer,
+    ProductValidateSerializer,
+    ReviewValidateSerializer,
 )
 from .models import Category, Product, Review
 
@@ -24,9 +27,12 @@ def category_detail_api_view(request, id):
         data = CategoryDetailSerializer(products, many=False).data
         return Response(data=data)
     elif request.method == 'PUT':
-        products.name = request.data.get('name')
-        products.count = int(request.data.get('count'))
-        products.is_active = request.data.get('is_active')
+        serializer = CategoryValidateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        products.name = serializer.validated_data.get('name')
+        products.count = int(serializer.validated_data.get('count'))
+        products.is_active = serializer.validated_data.get('is_active')
         products.save()
         return Response(status=status.HTTP_201_CREATED,
                         data=CategoryDetailSerializer(products, many=False).data)
@@ -45,11 +51,14 @@ def product_detail_api_view(request, id):
         data = ProductDetailSerializer(products, many=False).data
         return Response(data=data)
     elif request.method == 'PUT':
-        products.title = request.data.get('title')
-        products.description = request.data.get('description')
-        products.price = request.data.get('price')
-        products.category_id = request.data.get('category_id')
-        products.is_active = request.data.get('is_active')
+        serializer = ProductValidateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        products.title = serializer.validated_data.get('title')
+        products.description = serializer.validated_data.get('description')
+        products.price = serializer.validated_data.get('price')
+        products.category_id = serializer.validated_data.get('category_id')
+        products.is_active = serializer.validated_data.get('is_active')
         products.save()
         return Response(status=status.HTTP_201_CREATED,
                         data=ProductDetailSerializer(products, many=False).data)
@@ -68,10 +77,13 @@ def review_detail_api_view(request, id):
         data = ReviewDetailSerializer(products, many=False).data
         return Response(data=data)
     elif request.method == 'PUT':
-        products.text = request.data.get('text')
-        products.stars = request.data.get('stars')
-        products.product_id = request.data.get('product_id')
-        products.is_active = request.data.get('is_active')
+        serializer = ReviewValidateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        products.text = serializer.validated_data.get('text')
+        products.stars = serializer.validated_data.get('stars')
+        products.product_id = serializer.validated_data.get('product_id')
+        products.is_active = serializer.validated_data.get('is_active')
         products.save()
         return Response(status=status.HTTP_201_CREATED,
                         data=ReviewDetailSerializer(products, many=False).data)
@@ -88,9 +100,14 @@ def category_list_api_view(request):
         return Response(data=data)
     
     if request.method == 'POST':
-        name=request.data.get('name')
-        count=int(request.data.get('count'))
-        is_active=request.data.get('is_active')
+        serializer = CategoryValidateSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(status=status.HTTP_400_BAD_REQUEST,
+                            data=serializer.errors)
+
+        name = serializer.validated_data.get('name')
+        count = int(serializer.validated_data.get('count'))
+        is_active = serializer.validated_data.get('is_active')
         products = Category.objects.create(
             name=name,
             count=count,
@@ -108,18 +125,22 @@ def product_list_api_view(request):
         return Response(data=data)
     
     if request.method == 'POST':
-        title=request.data.get('title')
-        description=request.data.get('description')
-        price=request.data.get('price')
-        category_id = request.data.get('category_id')
-        category = get_object_or_404(Category, id=category_id)
-        is_active=request.data.get('is_active')
+        serializer = ProductValidateSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(status=status.HTTP_400_BAD_REQUEST,
+                            data=serializer.errors)
+
+        title = serializer.validated_data.get('title')
+        description = serializer.validated_data.get('description')
+        price = serializer.validated_data.get('price')
+        category_id = serializer.validated_data.get('category_id')
+        is_active = serializer.validated_data.get('is_active')
 
         products = Product.objects.create(
             title=title,
             description=description,
             price=price,
-            category=category,
+            category_id=category_id,
             is_active=is_active
         )
 
@@ -135,15 +156,19 @@ def review_list_api_view(request):
         return Response(data=data)
     
     if request.method == 'POST':
-        text=request.data.get('text')
-        stars=request.data.get('stars')
-        product_id=request.data.get('product_id')
-        product = get_object_or_404(Product, id=product_id)
-        is_active=request.data.get('is_active')
+        serializer = ReviewValidateSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(status=status.HTTP_400_BAD_REQUEST,
+                            data=serializer.errors)
+
+        text = serializer.validated_data.get('text')
+        stars = serializer.validated_data.get('stars')
+        product_id = serializer.validated_data.get('product_id')
+        is_active = serializer.validated_data.get('is_active')
         products = Review.objects.create(
             text=text,
             stars=stars,
-            product=product,
+            product_id=product_id,
             is_active=is_active
         )
 
