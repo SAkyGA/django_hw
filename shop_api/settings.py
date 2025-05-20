@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'products',
     'rest_framework',
+    'users',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -64,6 +66,13 @@ QUERYCOUNT = {
     'IGNORE_SQL_PATTERNS': [],
     'DISPLAY_DUPLICATES': None,
     'RESPONSE_HEADER': 'X-DjangoQueryCount-Count'
+}
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
 }
 
 
